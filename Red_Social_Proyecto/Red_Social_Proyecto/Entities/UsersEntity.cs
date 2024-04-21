@@ -8,20 +8,6 @@ namespace Red_Social_Proyecto.Entities
     [Table("users", Schema = "security")]
     public class UsersEntity : IdentityUser
     {
-        // Campos heredados de IdentityUser
-        [Column("email")]
-        public override string Email { get; set; }
-
-        [Column("normalized_email")]
-        public override string NormalizedEmail { get; set; }
-
-        [Column("password_hash")]
-        public override string PasswordHash { get; set; }
-
-        [Column("user_name")]
-        [Required]
-        [MaxLength(50)]
-        public string UserName { get; set; }
 
         [Column("registration_date")]
         public DateTime RegistrationDate { get; set; }
@@ -38,7 +24,12 @@ namespace Red_Social_Proyecto.Entities
         [MaxLength(300)]
         public string SocialMediaLinks { get; set; }
 
-        
+        public virtual ICollection<PublicationEntity> Publications { get; set; }
+        public virtual ICollection<CommentsEntity> Comments { get; set; }
+        public virtual ICollection<InteractionEntity> Interactions { get; set; }
+        public virtual ICollection<FollowEntity> Following { get; set; }
+        public virtual ICollection<FollowEntity> Followers { get; set; }
+
     }
 }
 

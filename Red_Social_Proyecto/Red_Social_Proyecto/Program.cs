@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
+using Red_Social_Proyecto.Entities;
 using todo_list_backend;
 using todo_list_backend.Database;
 
@@ -21,7 +22,7 @@ using (var scope = app.Services.CreateScope())
 
     try
     {
-        var userManager = services.GetRequiredService<UserManager<IdentityUser>>();
+        var userManager = services.GetRequiredService<UserManager<UsersEntity>>();
         var roleManager = services.GetRequiredService<RoleManager<IdentityRole>>();
 
         await TodoListDbSeeder.LoadDataAsync(userManager, roleManager, loggerFactory);

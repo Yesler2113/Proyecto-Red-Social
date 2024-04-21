@@ -39,5 +39,9 @@ namespace Red_Social_Proyecto.Entities
 
         [ForeignKey("CommentId")]
         public CommentsEntity Comment { get; set; }
+
+
+        public virtual ICollection<InteractionEntity> Interactions { get; set; }
+
     }
 }

@@ -44,32 +44,51 @@ namespace todo_list_backend
             services.AddAutoMapper(typeof(Startup));
 
             // Add Identity
-            services.AddIdentity<IdentityUser, IdentityRole>(options =>
+            //services.AddIdentity<UsersEntity, IdentityRole>(options =>
+            //{
+            //    options.SignIn.RequireConfirmedAccount = false;
+            //}).AddEntityFrameworkStores<TodoListDBContext>()
+            //.AddDefaultTokenProviders();
+
+            services.AddIdentity<UsersEntity, IdentityRole>(options =>
             {
+                // Configuraciones de validación de usuario
+                options.User.AllowedUserNameCharacters =
+                    "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-._@+";
+                options.User.RequireUniqueEmail = true;
+
+                // Configuraciones de validación de contraseña
+                options.Password.RequireDigit = false;
+                options.Password.RequiredLength = 6;
+                options.Password.RequireNonAlphanumeric = false;
+                options.Password.RequireUppercase = false;
+                options.Password.RequireLowercase = false;
+
                 options.SignIn.RequireConfirmedAccount = false;
             }).AddEntityFrameworkStores<TodoListDBContext>()
-            .AddDefaultTokenProviders();
+                .AddDefaultTokenProviders();
 
-            // Add Authentication
-            //services.AddAuthentication(options =>
-            //{
-            //    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-            //    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-            //    options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
-            //}).AddJwtBearer(options =>
-            //{
-            //    options.SaveToken = true;
-            //    options.RequireHttpsMetadata = false;
-            //    options.TokenValidationParameters = new TokenValidationParameters
-            //    {
-            //        ValidateIssuer = true,
-            //        ValidateAudience = true,
-            //        ValidAudience = Configuration["JWT:ValidAudience"],
-            //        ValidIssuer = Configuration["JWT:ValidIssuer"],
-            //        IssuerSigningKey = new SymmetricSecurityKey(
-            //            Encoding.UTF8.GetBytes(Configuration["JWT:Secret"]))
-            //    };
-            //});
+
+            //Add Authentication
+            services.AddAuthentication(options =>
+            {
+                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+            }).AddJwtBearer(options =>
+            {
+                options.SaveToken = true;
+                options.RequireHttpsMetadata = false;
+                options.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidateIssuer = true,
+                    ValidateAudience = true,
+                    ValidAudience = Configuration["JWT:ValidAudience"],
+                    ValidIssuer = Configuration["JWT:ValidIssuer"],
+                    IssuerSigningKey = new SymmetricSecurityKey(
+                        Encoding.UTF8.GetBytes(Configuration["JWT:Secret"]))
+                };
+            });
 
 
 

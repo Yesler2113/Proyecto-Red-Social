@@ -24,5 +24,7 @@ namespace Red_Social_Proyecto.Entities
 
         [ForeignKey("UserId")]
         public UsersEntity User { get; set; }
+
+        public virtual ICollection<CommentsEntity> Comments { get; set; }
     }
 }

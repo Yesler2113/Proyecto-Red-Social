@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using Red_Social_Proyecto.Database;
@@ -11,9 +12,11 @@ using Red_Social_Proyecto.Database;
 namespace Red_Social_Proyecto.Migrations
 {
     [DbContext(typeof(TodoListDBContext))]
-    partial class TodoListDBContextModelSnapshot : ModelSnapshot
+    [Migration("20240419184529_changeUserService")]
+    partial class changeUserService
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -176,9 +179,6 @@ namespace Red_Social_Proyecto.Migrations
                         .HasColumnType("character varying(300)")
                         .HasColumnName("content");
 
-                    b.Property<Guid>("ParentCommentId")
-                        .HasColumnType("uuid");
-
                     b.Property<Guid>("PublicationId")
                         .HasColumnType("uuid")
                         .HasColumnName("publication_id");
@@ -191,8 +191,6 @@ namespace Red_Social_Proyecto.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("CommentParentId");
-
-                    b.HasIndex("ParentCommentId");
 
                     b.HasIndex("PublicationId");
 
@@ -246,9 +244,6 @@ namespace Red_Social_Proyecto.Migrations
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("interaction_date");
 
-                    b.Property<Guid?>("InteractionEntityId")
-                        .HasColumnType("uuid");
-
                     b.Property<Guid>("PublicationId")
                         .HasColumnType("uuid")
                         .HasColumnName("publication_id");
@@ -267,8 +262,6 @@ namespace Red_Social_Proyecto.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("CommentId");
-
-                    b.HasIndex("InteractionEntityId");
 
                     b.HasIndex("PublicationId");
 
@@ -360,8 +353,10 @@ namespace Red_Social_Proyecto.Migrations
                         .HasColumnType("text");
 
                     b.Property<string>("Email")
+                        .IsRequired()
                         .HasMaxLength(256)
-                        .HasColumnType("character varying(256)");
+                        .HasColumnType("character varying(256)")
+                        .HasColumnName("email");
 
                     b.Property<bool>("EmailConfirmed")
                         .HasColumnType("boolean");
@@ -373,15 +368,19 @@ namespace Red_Social_Proyecto.Migrations
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("NormalizedEmail")
+                        .IsRequired()
                         .HasMaxLength(256)
-                        .HasColumnType("character varying(256)");
+                        .HasColumnType("character varying(256)")
+                        .HasColumnName("normalized_email");
 
                     b.Property<string>("NormalizedUserName")
                         .HasMaxLength(256)
                         .HasColumnType("character varying(256)");
 
                     b.Property<string>("PasswordHash")
-                        .HasColumnType("text");
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("password_hash");
 
                     b.Property<string>("PhoneNumber")
                         .HasColumnType("text");
@@ -412,8 +411,10 @@ namespace Red_Social_Proyecto.Migrations
                         .HasColumnType("boolean");
 
                     b.Property<string>("UserName")
+                        .IsRequired()
                         .HasMaxLength(256)
-                        .HasColumnType("character varying(256)");
+                        .HasColumnType("character varying(256)")
+                        .HasColumnName("user_name");
 
                     b.HasKey("Id");
 
@@ -481,31 +482,22 @@ namespace Red_Social_Proyecto.Migrations
             modelBuilder.Entity("Red_Social_Proyecto.Entities.CommentsEntity", b =>
                 {
                     b.HasOne("Red_Social_Proyecto.Entities.CommentsEntity", "CommentParent")
-                        .WithMany("ChildComments")
-                        .HasForeignKey("CommentParentId")
-                        .OnDelete(DeleteBehavior.Restrict);
-
-                    b.HasOne("Red_Social_Proyecto.Entities.CommentsEntity", "ParentComment")
                         .WithMany()
-                        .HasForeignKey("ParentCommentId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("CommentParentId");
 
                     b.HasOne("Red_Social_Proyecto.Entities.PublicationEntity", "Publication")
-                        .WithMany("Comments")
+                        .WithMany()
                         .HasForeignKey("PublicationId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("Red_Social_Proyecto.Entities.UsersEntity", "User")
-                        .WithMany("Comments")
+                        .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("CommentParent");
-
-                    b.Navigation("ParentComment");
 
                     b.Navigation("Publication");
 
@@ -515,13 +507,13 @@ namespace Red_Social_Proyecto.Migrations
             modelBuilder.Entity("Red_Social_Proyecto.Entities.FollowEntity", b =>
                 {
                     b.HasOne("Red_Social_Proyecto.Entities.UsersEntity", "Followed")
-                        .WithMany("Followers")
+                        .WithMany()
                         .HasForeignKey("FollowedId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("Red_Social_Proyecto.Entities.UsersEntity", "Follower")
-                        .WithMany("Following")
+                        .WithMany()
                         .HasForeignKey("FollowerId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -539,10 +531,6 @@ namespace Red_Social_Proyecto.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Red_Social_Proyecto.Entities.InteractionEntity", null)
-                        .WithMany("Interactions")
-                        .HasForeignKey("InteractionEntityId");
-
                     b.HasOne("Red_Social_Proyecto.Entities.PublicationEntity", "Publication")
                         .WithMany()
                         .HasForeignKey("PublicationId")
@@ -550,7 +538,7 @@ namespace Red_Social_Proyecto.Migrations
                         .IsRequired();
 
                     b.HasOne("Red_Social_Proyecto.Entities.UsersEntity", "User")
-                        .WithMany("Interactions")
+                        .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -576,40 +564,12 @@ namespace Red_Social_Proyecto.Migrations
             modelBuilder.Entity("Red_Social_Proyecto.Entities.PublicationEntity", b =>
                 {
                     b.HasOne("Red_Social_Proyecto.Entities.UsersEntity", "User")
-                        .WithMany("Publications")
+                        .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("User");
-                });
-
-            modelBuilder.Entity("Red_Social_Proyecto.Entities.CommentsEntity", b =>
-                {
-                    b.Navigation("ChildComments");
-                });
-
-            modelBuilder.Entity("Red_Social_Proyecto.Entities.InteractionEntity", b =>
-                {
-                    b.Navigation("Interactions");
-                });
-
-            modelBuilder.Entity("Red_Social_Proyecto.Entities.PublicationEntity", b =>
-                {
-                    b.Navigation("Comments");
-                });
-
-            modelBuilder.Entity("Red_Social_Proyecto.Entities.UsersEntity", b =>
-                {
-                    b.Navigation("Comments");
-
-                    b.Navigation("Followers");
-
-                    b.Navigation("Following");
-
-                    b.Navigation("Interactions");
-
-                    b.Navigation("Publications");
                 });
 #pragma warning restore 612, 618
         }

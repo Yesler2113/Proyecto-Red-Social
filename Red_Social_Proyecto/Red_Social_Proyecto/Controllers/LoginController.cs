@@ -22,9 +22,17 @@ namespace Red_Social_Proyecto.Controllers
 
         public async Task<ActionResult<ResponseDto<UsersDto>>> Create([FromBody] UsersCreateDto model)
         {
+            //var response = await _usersService.CreateUserAsync(model);
+
+            //return StatusCode(response.StatusCode, response);
             var response = await _usersService.CreateUserAsync(model);
 
-            return StatusCode(response.StatusCode, response);
+            if (!response.Status)
+            {
+                return BadRequest(response);  // Usa BadRequest para errores de lógica de negocio
+            }
+
+            return Ok(response);
         }
 
 

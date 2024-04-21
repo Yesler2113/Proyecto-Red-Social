@@ -35,5 +35,9 @@ namespace Red_Social_Proyecto.Entities
 
         [ForeignKey("CommentParentId")]
         public CommentsEntity CommentParent { get; set; }
+
+        public virtual CommentsEntity ParentComment { get; set; }
+        public virtual ICollection<CommentsEntity> ChildComments { get; set; }
+
     }
 }

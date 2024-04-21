@@ -6,18 +6,19 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 using Red_Social_Proyecto.Services.Interfaces;
+using Red_Social_Proyecto.Entities;
 
 namespace todo_list_backend.Services
 {
     public class AuthService : IAuthService
     {
-        private readonly SignInManager<IdentityUser> _signInManager;
-        private readonly UserManager<IdentityUser> _userManager;
+        private readonly SignInManager<UsersEntity> _signInManager;
+        private readonly UserManager<UsersEntity> _userManager;
         private readonly IConfiguration _configuration;
 
         public AuthService(
-            SignInManager<IdentityUser> signInManager,
-            UserManager<IdentityUser> userManager,
+            SignInManager<UsersEntity> signInManager,
+            UserManager<UsersEntity> userManager,
             IConfiguration configuration
             )
         {
