@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Red_Social_Proyecto.Dtos;
 using Red_Social_Proyecto.Dtos.Security;
@@ -8,7 +9,7 @@ using Red_Social_Proyecto.Services.Interfaces;
 
 namespace Red_Social_Proyecto.Controllers
 {
-    [Route("api/create")]
+    [Route("api/login")]
     [ApiController]
     public class LoginController : ControllerBase
     {
@@ -25,30 +26,38 @@ namespace Red_Social_Proyecto.Controllers
 
         public async Task<ActionResult<ResponseDto<UsersDto>>> Create([FromBody] UsersCreateDto model)
         {
-            //var response = await _usersService.CreateUserAsync(model);
-
-            //return StatusCode(response.StatusCode, response);
+            
             var response = await _usersService.CreateUserAsync(model);
 
             if (!response.Status)
             {
-                return BadRequest(response);  // Usa BadRequest para errores de lógica de negocio
+                return BadRequest(response);  
             }
 
             return Ok(response);
         }
 
-        [HttpPost("login")]
+        [HttpPost("init")]
         public async Task<ActionResult<ResponseDto<LoginResponseDto>>> Login([FromBody] LoginDto dto)
         {
             var response = await _authService.LoginAsync(dto);
 
             if (!response.Status)
             {
-                return BadRequest(response);  // Usa BadRequest para errores de lógica de negocio
+                return BadRequest(response);  
             }
 
             return Ok(response);
+        }
+
+        [HttpPost("regresh-token")]
+        [Authorize(AuthenticationSchemes = "Bearer")]
+
+        public async Task<ActionResult<ResponseDto<LoginResponseDto>>> RefreshToken()
+        {
+            var authresponse = await _authService.RefreshTokenAsync();
+
+            return StatusCode(authresponse.StatusCode, authresponse);
         }
 
 

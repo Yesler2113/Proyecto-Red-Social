@@ -14,40 +14,7 @@ using System.Text;
 
 namespace Red_Social_Proyecto.Services
 {
-    //public class UsersService : IUsersService
-    //{
-    //    private readonly TodoListDBContext _context;
-    //    private readonly IMapper _mapper;
-
-    //    public UsersService(TodoListDBContext context, IMapper mapper)
-    //    {
-    //        _context = context;
-    //        _mapper = mapper;
-    //    }
-
-    //    //public async Task<ResponseDto<UsersDto>> CreateUserAsync(UsersCreateDto model)
-    //    //{
-    //    //    var usersEntity = _mapper.Map<UsersEntity>(model);
-
-    //    //    usersEntity.RegistrationDate = DateTime.UtcNow;
-
-    //    //    _context.Users.Add(usersEntity);
-    //    //    await _context.SaveChangesAsync();
-
-    //    //    var usersDto = _mapper.Map<UsersDto>(usersEntity);
-
-    //    //    return new ResponseDto<UsersDto>
-    //    //    {
-    //    //        Status = true,
-    //    //        StatusCode = 201,
-    //    //        Message = "Usuario Creado Correctamente",
-    //    //        Data = usersDto
-
-    //    //    };
-    //    //}
-
-
-    //}
+    
 
     public class UsersService : IUsersService
     {

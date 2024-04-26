@@ -43,12 +43,9 @@ namespace todo_list_backend
             // Add Automapper Service
             services.AddAutoMapper(typeof(Startup));
 
-            // Add Identity
-            //services.AddIdentity<UsersEntity, IdentityRole>(options =>
-            //{
-            //    options.SignIn.RequireConfirmedAccount = false;
-            //}).AddEntityFrameworkStores<TodoListDBContext>()
-            //.AddDefaultTokenProviders();
+            services.AddHttpContextAccessor();
+
+           
 
             services.AddIdentity<UsersEntity, IdentityRole>(options =>
             {
@@ -86,19 +83,19 @@ namespace todo_list_backend
                     ValidAudience = Configuration["JWT:ValidAudience"],
                     ValidIssuer = Configuration["JWT:ValidIssuer"],
                     IssuerSigningKey = new SymmetricSecurityKey(
-                        Encoding.UTF8.GetBytes(Configuration["JWT:Secret"]))
+                        Encoding.UTF8.GetBytes(Configuration["JWT:Secret"]!))
                 };
             });
 
 
 
-            //services.AddCors(options =>
-            //{
-            //    options.AddDefaultPolicy(builder =>
-            //    {
-            //        builder.WithOrigins(Configuration["FrontendURL"]).AllowAnyHeader().AllowAnyMethod();
-            //    });
-            //});
+            services.AddCors(options =>
+            {
+                options.AddDefaultPolicy(builder =>
+                {
+                    builder.WithOrigins(Configuration["FrontendURL"]!).AllowAnyHeader().AllowAnyMethod();
+                });
+            });
 
             services.AddEndpointsApiExplorer();
             services.AddSwaggerGen();

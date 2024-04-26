@@ -13,11 +13,19 @@ namespace Red_Social_Proyecto.Services
     {
         private readonly TodoListDBContext _context;
         private readonly IMapper _mapper;
+        private readonly HttpContext _httpContext;
+        private readonly string _USER_ID;
 
-        public PublicationService(TodoListDBContext context, IMapper mapper)
+        public PublicationService(TodoListDBContext context, IMapper mapper, 
+            IHttpContextAccessor httpContextAccessor)
         {
             _context = context;
             _mapper = mapper;
+            _httpContext = httpContextAccessor.HttpContext; //para mandar el id del usuario que a creado la tarea
+            var idClaim = _httpContext.User.Claims.
+                Where(x => x.Type == "UserId"). //Revertir el token y obtener el id del usuario
+                FirstOrDefault();
+            _USER_ID = idClaim?.Value;
         }
 
         public async Task<ResponseDto<PublicationDto>> CreatePublicationAsync(PublicationCreateDto model)
@@ -25,6 +33,8 @@ namespace Red_Social_Proyecto.Services
             var publicationEntity = _mapper.Map<PublicationEntity>(model);
 
             publicationEntity.PublicationDate = DateTime.UtcNow; 
+
+            publicationEntity.UserId = _USER_ID;
 
             _context.Publications.Add(publicationEntity);
             await _context.SaveChangesAsync();
@@ -51,7 +61,9 @@ namespace Red_Social_Proyecto.Services
 
         public async Task<ResponseDto<bool>> DeletePublicationAsync(Guid publicationId)
         {
+
             var publication = await _context.Publications.FindAsync(publicationId);
+            publication.UserId = _USER_ID;
             if (publication == null)
             {
                 return new ResponseDto<bool>
